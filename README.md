@@ -482,7 +482,7 @@ Example Postman workflow:
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the --- License. See the `LICENSE` file for details.
 
 ---
 
@@ -502,4 +502,4 @@ screenshots/
 └── progress.png      # Reading progress view
 ```
 
-(Place your actual screenshots in a `screenshots/` directory and update paths as needed.)
+(Place my actual screenshots in a `screenshots/` directory and update paths as needed.)
