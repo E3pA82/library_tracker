@@ -250,14 +250,14 @@
 
 ## 6.1 Initialisation React
 
-- [ ] Créer le projet React : `npx create-react-app frontend`
-- [ ] Installer les dépendances :
-  - [ ] `axios` - Requêtes HTTP
-  - [ ] `react-router-dom` - Navigation
+- [X] Créer le projet React : `npx create-react-app frontend`
+- [X] Installer les dépendances :
+  - [X] `axios` - Requêtes HTTP
+  - [X] `react-router-dom` - Navigation
 
 ## 6.2 Structure des dossiers
 
-- [ ] Créer la structure :
+- [X] Créer la structure :
   
   src/
   ├── components/
@@ -269,10 +269,10 @@
 
 ## 6.3 Service API
 
-- [ ] Créer `src/services/api.js`
-  - [ ] Configurer axios avec baseURL
-  - [ ] Intercepteur pour ajouter le token JWT
-  - [ ] Intercepteur pour gérer les erreurs 401
+- [X] Créer `src/services/api.js`
+  - [X] Configurer axios avec baseURL
+  - [X] Intercepteur pour ajouter le token JWT
+  - [X] Intercepteur pour gérer les erreurs 401
 
 
 

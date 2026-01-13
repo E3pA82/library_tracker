@@ -488,9 +488,9 @@ This project is licensed under the --- License. See the `LICENSE` file for detai
 
 ## Contact & Contribution
 
-- Issues: use the GitHub Issues page (e.g. `https://github.com/your-username/library-tracker/issues`)
+- Issues: use the GitHub Issues page:  `https://github.com/E3pA82/library-tracker/issues`
 - Contributions: fork the repository, create a feature branch, and open a pull request
-- Questions: contact via email (e.g. `your-email@example.com`)
+- Questions: contact via email `harilalaopatricia@gmail.com`
 
 ---
 
