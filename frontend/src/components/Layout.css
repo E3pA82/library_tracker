@@ -1,0 +1,58 @@
+/* src/components/Layout.css */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.layout-main {
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px);
+  padding: 24px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 100vh;
+}
+
+.layout.sidebar-collapsed .layout-main {
+  margin-left: var(--sidebar-collapsed-width, 70px);
+}
+
+/* Header du contenu principal */
+.layout-header {
+  margin-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .layout-main {
+    margin-left: var(--sidebar-collapsed-width, 70px);
+  }
+  
+  .layout-main:has(+ .sidebar:hover) {
+    margin-left: var(--sidebar-width, 260px);
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-main {
+    margin-left: 0;
+    padding: 80px 16px 24px;
+  }
+}
+
+/* Animation du contenu */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.layout-main > * {
+  animation: fadeIn 0.3s ease;
+}

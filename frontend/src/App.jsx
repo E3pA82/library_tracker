@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Library from './pages/Library';
 import Register from './pages/Register';
+import AddBook from './pages/AddBook';
+import BookDetail from './pages/BookDetail';
 
 function App() {
   return (
@@ -25,7 +27,30 @@ function App() {
                 </PrivateRoute>
               }
             />
-          <Route path="/library" element={<PrivateRoute><Library /></PrivateRoute>} />
+            <Route
+              path="/library"
+              element={
+                <PrivateRoute>
+                  <Library />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-book"
+              element={
+                <PrivateRoute>
+                  <AddBook />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/library/:id"
+              element={
+                <PrivateRoute>
+                  <BookDetail />
+                </PrivateRoute>
+              }
+            />
            {/* Route par défaut si l'URL ne correspond à rien */}
           <Route
             path="*"

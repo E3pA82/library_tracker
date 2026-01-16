@@ -314,52 +314,52 @@
 
 ## 8.1 Layout principal
 
-- [ ] Créer `src/components/Navbar.jsx`
-  - [ ] Logo/Titre
-  - [ ] Liens de navigation
-  - [ ] Bouton déconnexion
-- [ ] Créer `src/components/Layout.jsx`
-  - [ ] Navbar + contenu principal
+- [X] Créer `src/components/Sidebar.jsx`
+  - [X] Logo/Titre
+  - [X] Liens de navigation
+  - [X] Bouton déconnexion
+- [X] Créer `src/components/Layout.jsx`
+  - [X] Sidebar + contenu principal
 
 ## 8.2 Page Dashboard
 
-- [ ] Créer `src/pages/Dashboard.jsx`
-  - [ ] Afficher les statistiques (appel `/api/my-books/stats/`)
-  - [ ] Cards : Total livres, Lus, En cours, Non lus, Pages lues
-  - [ ] Section : Livres en cours de lecture
-  - [ ] Section : Objectifs actifs
+- [X] Créer `src/pages/Dashboard.jsx`
+  - [X] Afficher les statistiques (appel `/api/my-books/stats/`)
+  - [X] Cards : Total livres, Lus, En cours, Non lus, Pages lues
+  - [X] Section : Livres en cours de lecture
+  - [X] Section : Objectifs actifs
 
 ## 8.3 Page Bibliothèque
 
-- [ ] Créer `src/pages/Library.jsx`
-  - [ ] Liste des livres de l'utilisateur
-  - [ ] Filtres par statut (tous, lu, en_cours, non_lu)
-  - [ ] Pour chaque livre afficher :
-    - [ ] Titre, Auteur
-    - [ ] Statut
-    - [ ] Barre de progression
-    - [ ] Pages lues / Total pages
-  - [ ] Bouton pour mettre à jour les pages lues
-  - [ ] Bouton pour supprimer de la bibliothèque
+- [X] Créer `src/pages/Library.jsx`
+  - [X] Liste des livres de l'utilisateur
+  - [X] Filtres par statut (tous, lu, en_cours, non_lu)
+  - [X] Pour chaque livre afficher :
+    - [X] Titre, Auteur
+    - [X] Statut
+    - [X] Barre de progression
+    - [X] Pages lues / Total pages
+  - [X] Bouton pour mettre à jour les pages lues
+  - [X] Bouton pour supprimer de la bibliothèque
 
 ## 8.4 Page Ajouter un livre
 
-- [ ] Créer `src/pages/AddBook.jsx`
-  - [ ] Rechercher dans le catalogue existant
-  - [ ] OU créer un nouveau livre :
-    - [ ] Formulaire : Titre, Auteur, Nombre de pages
-    - [ ] Si auteur n'existe pas, le créer
-  - [ ] Ajouter à la bibliothèque personnelle
+- [X] Créer `src/pages/AddBook.jsx`
+  - [X] Rechercher dans le catalogue existant
+  - [X] OU créer un nouveau livre :
+    - [X] Formulaire : Titre, Auteur, Nombre de pages
+    - [X] Si auteur n'existe pas, le créer
+  - [X] Ajouter à la bibliothèque personnelle
 
 ## 8.5 Page Détail d'un livre
 
-- [ ] Créer `src/pages/BookDetail.jsx`
-  - [ ] Afficher toutes les infos du livre
-  - [ ] Formulaire pour mettre à jour :
-    - [ ] Pages lues (input number)
-    - [ ] Commentaire (textarea)
-  - [ ] Afficher le statut actuel
-  - [ ] Barre de progression visuelle
+- [X] Créer `src/pages/BookDetail.jsx`
+  - [X] Afficher toutes les infos du livre
+  - [X] Formulaire pour mettre à jour :
+    - [X] Pages lues (input number)
+    - [X] Commentaire (textarea)
+  - [X] Afficher le statut actuel
+  - [X] Barre de progression visuelle
 
 
 
