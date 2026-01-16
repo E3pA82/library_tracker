@@ -280,33 +280,33 @@
 
 ## 7.1 Context d'authentification
 
-- [ ] Créer `src/context/AuthContext.js`
-  - [ ] State : user (boolean ou objet)
-  - [ ] Fonction `login(username, password)`
-  - [ ] Fonction `logout()`
-  - [ ] Stocker le token dans localStorage
+- [X] Créer `src/context/AuthContext.js`
+  - [X] State : user (boolean ou objet)
+  - [X] Fonction `login(username, password)`
+  - [X] Fonction `logout()`
+  - [X] Stocker le token dans localStorage
 
 ## 7.2 Page de connexion
 
-- [ ] Créer `src/pages/Login.jsx`
-  - [ ] Formulaire : username, password
-  - [ ] Appel API `/api/login/`
-  - [ ] Redirection vers Dashboard après connexion
-  - [ ] Gestion des erreurs
+- [X] Créer `src/pages/Login.jsx`
+  - [X] Formulaire : username, password
+  - [X] Appel API `/api/login/`
+  - [X] Redirection vers Dashboard après connexion
+  - [X] Gestion des erreurs
 
 ## 7.3 Page d'inscription
 
-- [ ] Créer `src/pages/Register.jsx`
-  - [ ] Formulaire : username, email, password
-  - [ ] Appel API `/api/register/`
-  - [ ] Redirection vers Login après inscription
-  - [ ] Gestion des erreurs
+- [X] Créer `src/pages/Register.jsx`
+  - [X] Formulaire : username, email, password
+  - [X] Appel API `/api/register/`
+  - [X] Redirection vers Login après inscription
+  - [X] Gestion des erreurs
 
 ## 7.4 Route protégée
 
-- [ ] Créer composant `PrivateRoute`
-  - [ ] Vérifier si utilisateur connecté
-  - [ ] Rediriger vers /login si non connecté
+- [X] Créer composant `PrivateRoute`
+  - [X] Vérifier si utilisateur connecté
+  - [X] Rediriger vers /login si non connecté
 
 
 

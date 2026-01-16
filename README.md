@@ -490,7 +490,7 @@ This project is licensed under the --- License. See the `LICENSE` file for detai
 
 - Issues: use the GitHub Issues page:  `https://github.com/E3pA82/library-tracker/issues`
 - Contributions: fork the repository, create a feature branch, and open a pull request
-- Questions: contact via email `harilalaopatricia@gmail.com`
+- Questions: contact via email `me@gmail.com`
 
 ---
 
