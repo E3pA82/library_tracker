@@ -399,27 +399,27 @@
 
 ## 10.1 Page Listes de lecture
 
-- [ ] Créer `src/pages/ReadingLists.jsx`
-  - [ ] Liste des listes créées par l'utilisateur
-  - [ ] Pour chaque liste :
-    - [ ] Nom
-    - [ ] Nombre de livres
-    - [ ] Aperçu des livres
-  - [ ] Bouton créer nouvelle liste
-  - [ ] Bouton supprimer liste
+- [X] Créer `src/pages/ReadingLists.jsx`
+  - [X] Liste des listes créées par l'utilisateur
+  - [X] Pour chaque liste :
+    - [X] Nom
+    - [X] Nombre de livres
+    - [X] Aperçu des livres
+  - [X] Bouton créer nouvelle liste
+  - [X] Bouton supprimer liste
 
 ## 10.2 Page Détail d'une liste
 
-- [ ] Créer `src/pages/ListDetail.jsx`
-  - [ ] Afficher tous les livres de la liste
-  - [ ] Bouton retirer un livre
-  - [ ] Bouton ajouter un livre (depuis ma bibliothèque)
+- [X] Créer `src/pages/ListDetail.jsx`
+  - [X] Afficher tous les livres de la liste
+  - [X] Bouton retirer un livre
+  - [X] Bouton ajouter un livre (depuis ma bibliothèque)
 
 ## 10.3 Formulaire création liste
 
-- [ ] Créer `src/components/ListForm.jsx`
-  - [ ] Input : Nom de la liste
-  - [ ] Bouton soumettre
+- [X] Créer `src/components/ListForm.jsx`
+  - [X] Input : Nom de la liste
+  - [X] Bouton soumettre
 
 
 
@@ -427,26 +427,26 @@
 
 ## 11.1 Filtres et recherche
 
-- [ ] Ajouter filtres sur UserBookViewSet :
-  - [ ] Filtrer par statut
-  - [ ] Recherche par titre
-- [ ] Ajouter filtres sur BookViewSet :
-  - [ ] Recherche par titre
-  - [ ] Filtrer par auteur
-- [ ] Ajouter filtres sur ReadingGoalViewSet :
-  - [ ] Filtrer par période
-  - [ ] Filtrer par type
+- [X] Ajouter filtres sur UserBookViewSet :
+  - [X] Filtrer par statut
+  - [X] Recherche par titre
+- [x] Ajouter filtres sur BookViewSet :
+  - [X] Recherche par titre
+  - [X] Filtrer par auteur
+- [X] Ajouter filtres sur ReadingGoalViewSet :
+  - [X] Filtrer par période
+  - [X] Filtrer par type
 
 ## 11.2 Pagination
 
-- [ ] Configurer la pagination dans settings.py
+- [X] Configurer la pagination dans settings.py
 - [ ] Tester la pagination sur les listes
 
 ## 11.3 Validation
 
-- [ ] Valider que pages_read <= total_pages
-- [ ] Valider les dates des objectifs (start_date < end_date)
-- [ ] Valider l'unicité user + book dans UserBook
+- [X] Valider que pages_read <= total_pages
+- [X] Valider les dates des objectifs (start_date < end_date)
+- [X] Valider l'unicité user + book dans UserBook
 
 
 
@@ -454,8 +454,8 @@
 
 ## 12.1 Styles CSS
 
-- [ ] Installer Tailwind CSS OU créer fichiers CSS
-- [ ] Styliser la Navbar
+- [ ] Créer fichiers CSS
+- [ ] Styliser la Sidebar
 - [ ] Styliser les Cards
 - [ ] Styliser les formulaires
 - [ ] Styliser les barres de progression
@@ -490,7 +490,7 @@
 - [ ] Créer page `src/pages/Profile.jsx`
 - [ ] Permettre la modification du profil
 
-## 13.2 Sessions de lecture (optionnel)
+## 13.2 Sessions de lecture 
 
 - [ ] Créer modèle `ReadingSession`
   - [ ] user_book (FK)
@@ -513,6 +513,7 @@
 - [ ] Afficher les étoiles
 - [ ] Permettre de noter un livre
 
+----------------------------------------------------------------------------------------------------------------------------------
 
 
 # PHASE 14 : TESTS 🟢

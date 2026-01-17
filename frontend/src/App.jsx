@@ -11,6 +11,9 @@ import AddBook from './pages/AddBook';
 import BookDetail from './pages/BookDetail';
 import Goals from './pages/Goals';
 import NewGoal from './pages/NewGoal';
+import ReadingLists from './pages/ReadingLists';
+import ListDetail from './pages/ListDetail';
+import NewList from './pages/NewList';
 
 function App() {
   return (
@@ -66,6 +69,30 @@ function App() {
               element={
                 <PrivateRoute>
                   <NewGoal />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/lists"
+              element={
+                <PrivateRoute>
+                  <ReadingLists />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/lists/:id"
+              element={
+                <PrivateRoute>
+                  <ListDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/lists/new"
+              element={
+                <PrivateRoute>
+                  <NewList />
                 </PrivateRoute>
               }
             />

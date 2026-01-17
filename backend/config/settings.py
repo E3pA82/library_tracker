@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',                    # Django REST Framework
     'rest_framework_simplejwt',          # Authentification JWT
     'corsheaders',                       # Gestion CORS pour React
+    'django_filters',                    # Filtres pour DRF
     
     # Applications locales
     'api',                               # Notre application principale

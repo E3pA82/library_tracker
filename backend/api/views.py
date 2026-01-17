@@ -3,7 +3,8 @@
 Views pour l'API Library Tracker
 """
 
-from rest_framework import viewsets, generics, status, permissions
+from rest_framework import viewsets, generics, status, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -55,7 +56,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
 
 # =============================================================================
-# 4.3 BOOK VIEWSET
+# 4.3 BOOK VIEWSET (Catalogue)
 # =============================================================================
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -71,6 +72,10 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.select_related('author').all()
     serializer_class = BookSerializer
 
+    # Filtres et recherche
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['author']        # ?author=1
+    search_fields = ['title']            # ?search=titre
 
 # =============================================================================
 # 4.4 USERBOOK VIEWSET (Bibliothèque personnelle)
@@ -91,6 +96,11 @@ class UserBookViewSet(viewsets.ModelViewSet):
     GET    /api/my-books/stats/                → Statistiques de lecture
     """
     serializer_class = UserBookSerializer
+
+    # Filtres et recherche
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['status']  # ?status=lu
+    search_fields = ['book__title', 'book__author__name']  # ?search=mot
     
     def get_queryset(self):
         """Retourne uniquement les livres de l'utilisateur connecté"""
@@ -186,6 +196,10 @@ class ReadingGoalViewSet(viewsets.ModelViewSet):
     GET    /api/goals/{id}/progress/ → Progression d'un objectif
     """
     serializer_class = ReadingGoalSerializer
+
+    # Filtres
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['period', 'goal_type']  # ?period=monthly&goal_type=pages
     
     def get_queryset(self):
         """Retourne uniquement les objectifs de l'utilisateur connecté"""
