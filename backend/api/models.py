@@ -1,6 +1,7 @@
 # backend/api/models.py
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 
 class Author(models.Model):
@@ -77,6 +78,39 @@ class ReadingGoal(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.target} {self.goal_type}/{self.period}"
+
+    @property
+    def current_value(self):
+        """
+        Valeur actuelle de l'objectif.
+
+        - Si goal_type == 'pages' : somme des pages lues sur la période
+        - Si goal_type == 'books' : nb de livres 'lu' sur la période
+
+        Ici on approxime "sur la période" avec date_added de UserBook,
+        faute d'avoir des dates de lecture détaillées.
+        """
+        from .models import UserBook  # référence au modèle défini plus haut
+
+        qs = UserBook.objects.filter(
+            user=self.user,
+            date_added__gte=self.start_date,
+            date_added__lte=self.end_date,
+        )
+
+        if self.goal_type == self.GoalType.PAGES:
+            return qs.aggregate(total=Sum('pages_read'))['total'] or 0
+        else:  # BOOKS
+            return qs.filter(status=UserBook.Status.LU).count()
+
+    @property
+    def progress_percentage(self):
+        """
+        Pourcentage de progression de l'objectif (0 à 100).
+        """
+        if self.target > 0:
+            return min(100, round((self.current_value / self.target) * 100))
+        return 0
 
 
 class ReadingList(models.Model):

@@ -182,6 +182,8 @@ class ReadingGoalViewSet(viewsets.ModelViewSet):
     GET    /api/goals/{id}/ → Détail d'un objectif
     PUT    /api/goals/{id}/ → Modifier un objectif
     DELETE /api/goals/{id}/ → Supprimer un objectif
+
+    GET    /api/goals/{id}/progress/ → Progression d'un objectif
     """
     serializer_class = ReadingGoalSerializer
     
@@ -192,6 +194,26 @@ class ReadingGoalViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Assigne automatiquement l'utilisateur connecté"""
         serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['get'])
+    def progress(self, request, pk=None):
+        """
+        Retourne la progression pour un objectif donné.
+
+        GET /api/goals/{id}/progress/
+        """
+        goal = self.get_object()
+        data = {
+            'id': goal.id,
+            'goal_type': goal.goal_type,
+            'period': goal.period,
+            'target': goal.target,
+            'current_value': goal.current_value,
+            'progress_percentage': goal.progress_percentage,
+            'start_date': goal.start_date,
+            'end_date': goal.end_date,
+        }
+        return Response(data)
 
 
 # =============================================================================

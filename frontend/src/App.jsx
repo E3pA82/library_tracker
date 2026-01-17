@@ -9,6 +9,8 @@ import Library from './pages/Library';
 import Register from './pages/Register';
 import AddBook from './pages/AddBook';
 import BookDetail from './pages/BookDetail';
+import Goals from './pages/Goals';
+import NewGoal from './pages/NewGoal';
 
 function App() {
   return (
@@ -48,6 +50,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <BookDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/goals"
+              element={
+                <PrivateRoute>
+                  <Goals />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/goals/new"
+              element={
+                <PrivateRoute>
+                  <NewGoal />
                 </PrivateRoute>
               }
             />

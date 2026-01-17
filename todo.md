@@ -367,31 +367,31 @@
 
 ## 9.1 Page Objectifs
 
-- [ ] Créer `src/pages/Goals.jsx`
-  - [ ] Liste des objectifs actuels
-  - [ ] Pour chaque objectif :
-    - [ ] Type (pages/livres)
-    - [ ] Période (jour/semaine/mois/année)
-    - [ ] Cible vs Actuel
-    - [ ] Barre de progression
-  - [ ] Bouton créer nouvel objectif
-  - [ ] Bouton supprimer objectif
+- [X] Créer `src/pages/Goals.jsx`
+  - [X] Liste des objectifs actuels
+  - [X] Pour chaque objectif :
+    - [X] Type (pages/livres)
+    - [X] Période (jour/semaine/mois/année)
+    - [X] Cible vs Actuel
+    - [X] Barre de progression
+  - [X] Bouton créer nouvel objectif
+  - [X] Bouton supprimer objectif
 
 ## 9.2 Formulaire création objectif
 
-- [ ] Créer `src/components/GoalForm.jsx`
-  - [ ] Select : Type (pages ou livres)
-  - [ ] Select : Période (quotidien, hebdo, mensuel, annuel)
-  - [ ] Input : Objectif (nombre)
-  - [ ] Date début / Date fin
-  - [ ] Bouton soumettre
+- [X] Créer `src/components/GoalForm.jsx`
+  - [X] Select : Type (pages ou livres)
+  - [X] Select : Période (quotidien, hebdo, mensuel, annuel)
+  - [X] Input : Objectif (nombre)
+  - [X] Date début / Date fin
+  - [X] Bouton soumettre
 
 ## 9.3 Calcul de progression des objectifs
 
-- [ ] Implémenter le calcul côté backend :
-  - [ ] Pour type "pages" : somme des pages lues dans la période
-  - [ ] Pour type "books" : nombre de livres avec status="lu" dans la période
-- [ ] Ajouter endpoint `/api/goals/{id}/progress/`
+- [X] Implémenter le calcul côté backend :
+  - [X] Pour type "pages" : somme des pages lues dans la période
+  - [X] Pour type "books" : nombre de livres avec status="lu" dans la période
+- [X] Ajouter endpoint `/api/goals/{id}/progress/`
 
 
 

@@ -57,3 +57,20 @@ class ReadingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReadingList
         fields = ['id', 'name', 'books', 'created_at']
+
+class ReadingGoalSerializer(serializers.ModelSerializer):
+    current_value = serializers.ReadOnlyField()
+    progress_percentage = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ReadingGoal
+        fields = [
+            'id',
+            'goal_type',
+            'period',
+            'target',
+            'start_date',
+            'end_date',
+            'current_value',
+            'progress_percentage',
+        ]
