@@ -454,7 +454,7 @@
 
 ## 12.1 Styles CSS
 
-- [ ] Créer fichiers CSS
+- [ ] Créer fichiers CSS ou utiliser Tailwind
 - [ ] Styliser la Sidebar
 - [ ] Styliser les Cards
 - [ ] Styliser les formulaires
