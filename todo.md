@@ -454,28 +454,28 @@
 
 ## 12.1 Styles CSS
 
-- [ ] Créer fichiers CSS ou utiliser Tailwind
-- [ ] Styliser la Sidebar
-- [ ] Styliser les Cards
-- [ ] Styliser les formulaires
-- [ ] Styliser les barres de progression
-- [ ] Responsive design (mobile-first)
+- [X] Créer fichiers CSS ou utiliser Tailwind
+- [X] Styliser la Sidebar
+- [X] Styliser les Cards
+- [X] Styliser les formulaires
+- [X] Styliser les barres de progression
+- [X] Responsive design (mobile-first)
 
 ## 12.2 UX Améliorations
 
-- [ ] Ajouter loading spinners
-- [ ] Ajouter messages de succès/erreur (toasts)
-- [ ] Ajouter confirmations de suppression
-- [ ] Ajouter animations de transition
+- [X] Ajouter loading spinners
+- [X] Ajouter messages de succès/erreur (toasts)
+- [X] Ajouter confirmations de suppression
+- [X] Ajouter animations de transition
 
 ## 12.3 Composants réutilisables
 
-- [ ] Créer `src/components/BookCard.jsx`
-- [ ] Créer `src/components/ProgressBar.jsx`
-- [ ] Créer `src/components/StatCard.jsx`
-- [ ] Créer `src/components/Modal.jsx`
-- [ ] Créer `src/components/Button.jsx`
-- [ ] Créer `src/components/Input.jsx`
+- [X] Créer `src/components/ui/BookCard.jsx`
+- [X] Créer `src/components/ui/ProgressBar.jsx`
+- [x] Créer `src/components/ui/StatCard.jsx`
+- [X] Créer `src/components/ui/Modal.jsx`
+- [X] Créer `src/components/ui/Button.jsx`
+- [X] Créer `src/components/ui/Input.jsx`
 
 
 

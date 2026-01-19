@@ -1,195 +1,144 @@
 // src/components/Sidebar.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import './Sidebar.css';
-
-// Icônes SVG personnalisées
-const icons = {
-  dashboard: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
-    </svg>
-  ),
-  library: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  ),
-  addBook: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="8" x2="12" y2="16" />
-      <line x1="8" y1="12" x2="16" y2="12" />
-    </svg>
-  ),
-  authors: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  ),
-  catalog: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-    </svg>
-  ),
-  goals: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-    </svg>
-  ),
-  lists: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="8" y1="6" x2="21" y2="6" />
-      <line x1="8" y1="12" x2="21" y2="12" />
-      <line x1="8" y1="18" x2="21" y2="18" />
-      <line x1="3" y1="6" x2="3.01" y2="6" />
-      <line x1="3" y1="12" x2="3.01" y2="12" />
-      <line x1="3" y1="18" x2="3.01" y2="18" />
-    </svg>
-  ),
-  logout: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  ),
-  toggle: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  ),
-  menu: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  ),
-  close: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  ),
-};
-
-const navItems = [
-  { path: '/dashboard', label: 'Tableau de bord', icon: 'dashboard' },
-  { path: '/library', label: 'Ma Bibliothèque', icon: 'library' },
-  { path: '/add-book', label: 'Ajouter un livre', icon: 'addBook' },
-  { path: '/authors', label: 'Auteurs', icon: 'authors' },
-  { path: '/books', label: 'Catalogue', icon: 'catalog' },
-  { path: '/goals', label: 'Objectifs', icon: 'goals' },
-  { path: '/lists', label: 'Listes', icon: 'lists' },
-];
+import { 
+  FiHome, 
+  FiBook, 
+  FiPlusCircle, 
+  FiTarget, 
+  FiList, 
+  FiUsers, 
+  FiGrid,
+  FiLogOut,
+  FiMenu,
+  FiX
+} from 'react-icons/fi';
 
 function Sidebar() {
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  // Fermer le menu mobile lors du changement de route
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsMobileOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const closeMobileMenu = () => {
-    setIsMobileOpen(false);
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeSidebar = () => setIsOpen(false);
 
-  const sidebarClasses = `sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`;
+  const navItems = [
+    { to: '/dashboard', icon: FiHome, label: 'Tableau de bord' },
+    { to: '/library', icon: FiBook, label: 'Ma Bibliothèque' },
+    { to: '/add-book', icon: FiPlusCircle, label: 'Ajouter un livre' },
+    { to: '/goals', icon: FiTarget, label: 'Objectifs' },
+    { to: '/lists', icon: FiList, label: 'Listes de lecture' },
+    { divider: true },
+    { to: '/authors', icon: FiUsers, label: 'Auteurs' },
+    { to: '/books', icon: FiGrid, label: 'Catalogue' },
+  ];
+
+  const sidebarContent = (
+    <>
+      {/* Logo */}
+      <div className="p-6 border-b border-white/10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 shadow-lg shadow-primary-500/30">
+              <FiBook className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary-400 to-purple-400 bg-clip-text text-transparent">
+              Library Tracker
+            </span>
+          </div>
+          {/* Bouton fermer (mobile) */}
+          <button 
+            onClick={closeSidebar}
+            className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <FiX className="w-5 h-5 text-gray-400" />
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        {navItems.map((item, index) => (
+          item.divider ? (
+            <div key={index} className="border-t border-white/10 my-4" />
+          ) : (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onClick={closeSidebar}
+              className={({ isActive }) =>
+                `nav-link-modern ${isActive ? 'active' : ''}`
+              }
+            >
+              <item.icon className="w-5 h-5" />
+              <span>{item.label}</span>
+            </NavLink>
+          )
+        ))}
+      </nav>
+
+      {/* Bouton déconnexion */}
+      <div className="p-4 border-t border-white/10">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-semibold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transition-all duration-300"
+        >
+          <FiLogOut className="w-5 h-5" />
+          <span>Déconnexion</span>
+        </button>
+      </div>
+    </>
+  );
 
   return (
     <>
-      {/* Bouton menu mobile */}
-      <button 
-        className="mobile-menu-button" 
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        aria-label="Toggle menu"
+      {/* Bouton menu hamburger (mobile) */}
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl glass-dark text-white shadow-lg"
       >
-        {isMobileOpen ? icons.close : icons.menu}
+        <FiMenu className="w-6 h-6" />
       </button>
 
-      {/* Overlay mobile */}
-      <div 
-        className={`sidebar-overlay ${isMobileOpen ? 'visible' : ''}`}
-        onClick={closeMobileMenu}
-      />
+      {/* Overlay sombre (mobile) */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeSidebar}
+            className="lg:hidden fixed inset-0 bg-black/60 z-40"
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Sidebar */}
-      <aside className={sidebarClasses}>
-        {/* Header */}
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <span className="sidebar-logo-icon">📚</span>
-            <span className="sidebar-logo-text">Library Tracker</span>
-          </div>
-          <button 
-            className="sidebar-toggle"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            aria-label="Toggle sidebar"
+      {/* Sidebar Desktop - toujours visible */}
+      <div className="hidden lg:flex fixed top-0 left-0 w-64 h-screen glass-dark flex-col z-50">
+        {sidebarContent}
+      </div>
+
+      {/* Sidebar Mobile - conditionnelle */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ x: -280 }}
+            animate={{ x: 0 }}
+            exit={{ x: -280 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="lg:hidden fixed top-0 left-0 w-64 h-screen glass-dark flex flex-col z-50"
           >
-            {icons.toggle}
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              <span className="nav-link-icon">{icons[item.icon]}</span>
-              <span className="nav-link-text">{item.label}</span>
-              <span className="nav-link-tooltip">{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* User section */}
-        <div className="sidebar-user">
-          <div className="user-avatar">
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-          </div>
-          <div className="user-info">
-            <div className="user-name">{user?.name || 'Utilisateur'}</div>
-            <div className="user-role">Lecteur passionné</div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="sidebar-footer">
-          <button className="logout-button" onClick={handleLogout}>
-            <span className="logout-button-icon">{icons.logout}</span>
-            <span className="logout-button-text">Déconnexion</span>
-          </button>
-        </div>
-      </aside>
+            {sidebarContent}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

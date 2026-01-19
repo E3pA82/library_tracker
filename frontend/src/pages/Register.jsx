@@ -3,18 +3,19 @@ import React, { useState } from 'react';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import Alert from '../components/ui/Alert';
+import Button from '../components/ui/Button';
 
 function Register() {
   const [username, setUsername] = useState('');
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const [loading, setLoading]   = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Si déjà connecté, on ne laisse pas aller sur /register
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -25,24 +26,14 @@ function Register() {
     setLoading(true);
 
     try {
-      // Appel à l’API /api/register/
-      await api.post('/register/', {
-        username,
-        email,
-        password,
-      });
-
-      // Si tout va bien, on redirige vers la page de login
+      await api.post('/register/', { username, email, password });
       navigate('/login', { replace: true });
     } catch (err) {
       console.error(err);
-      // Gestion des erreurs
       if (err.response && err.response.data) {
         const data = err.response.data;
-
-        // Si l’API renvoie des erreurs de validation de champs
         if (data.username) {
-          setError(`Username : ${data.username.join(' ')}`);
+          setError(`Nom d'utilisateur : ${data.username.join(' ')}`);
         } else if (data.email) {
           setError(`Email : ${data.email.join(' ')}`);
         } else if (data.password) {
@@ -59,57 +50,79 @@ function Register() {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 400, margin: '0 auto' }}>
-      <h1>Inscription</h1>
-
-      {error && (
-        <div style={{ color: 'red', marginBottom: 10 }}>
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 10 }}>
-          <label>Nom d'utilisateur :</label><br />
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-            required
-          />
+    <div className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl mb-2">📚</h1>
+          <h2 className="text-2xl font-bold text-gray-800">Library Tracker</h2>
+          <p className="text-gray-500">Créez votre compte</p>
         </div>
 
-        <div style={{ marginBottom: 10 }}>
-          <label>Email :</label><br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </div>
+        {error && <Alert type="error">{error}</Alert>}
 
-        <div style={{ marginBottom: 10 }}>
-          <label>Mot de passe :</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nom d'utilisateur
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+              placeholder="Choisissez un nom d'utilisateur"
+              autoComplete="username"
+              required
+            />
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Inscription..." : "S'inscrire"}
-        </button>
-      </form>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+              placeholder="Entrez votre email"
+              autoComplete="email"
+              required
+            />
+          </div>
 
-      <p style={{ marginTop: 10 }}>
-        Déjà un compte ? <Link to="/login">Se connecter</Link>
-      </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mot de passe
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+              placeholder="Créez un mot de passe"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3"
+          >
+            {loading ? "Inscription..." : "S'inscrire"}
+          </Button>
+        </form>
+
+        <p className="text-center mt-6 text-gray-600">
+          Déjà un compte ?{' '}
+          <Link to="/login" className="text-primary-600 hover:underline font-semibold">
+            Se connecter
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

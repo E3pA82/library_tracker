@@ -1,24 +1,39 @@
 // src/pages/Library.jsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiBook, FiPlus, FiSearch } from 'react-icons/fi';
 import Layout from '../components/Layout';
 import api from '../services/api';
+import PageHeader from '../components/ui/PageHeader';
+import BookCard from '../components/ui/BookCard';
+import Button from '../components/ui/Button';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import Alert from '../components/ui/Alert';
+import Modal from '../components/ui/Modal';
+import Input from '../components/ui/Input';
+import { useToast } from '../context/ToastContext';
 
+const extractResults = (data) => {
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.results)) return data.results;
+  return [];
+};
 
 function Library() {
   const [books, setBooks] = useState([]);
-  const [filterStatus, setFilterStatus] = useState('all'); // all, non_lu, en_cours, lu
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Modal de mise à jour
+  const [updateModal, setUpdateModal] = useState({ isOpen: false, book: null });
+  const [pagesInput, setPagesInput] = useState('');
 
-  // Utilitaire pour gérer la pagination DRF (results)
-  const extractResults = (data) => {
-    if (Array.isArray(data)) return data;
-    if (data && Array.isArray(data.results)) return data.results;
-    return [];
-  };
+  const toast = useToast();
 
-   const fetchBooks = useCallback(async () => {
+  const fetchBooks = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -27,254 +42,197 @@ function Library() {
     } catch (err) {
       console.error(err);
       setError('Erreur lors du chargement de votre bibliothèque.');
+      toast.error('Erreur lors du chargement de votre bibliothèque.');
     } finally {
       setLoading(false);
     }
-  }, []); // pas de dépendances : la fonction est stable
+  }, [toast]);
 
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
 
-  const handleUpdateProgress = async (userBook) => {
-    const current = userBook.pages_read || 0;
-    const total = userBook.book.total_pages;
+  const openUpdateModal = (book) => {
+    setUpdateModal({ isOpen: true, book });
+    setPagesInput(book.pages_read || 0);
+  };
 
-    const input = window.prompt(
-      `Nombre de pages lues pour "${userBook.book.title}" (0 à ${total}) :`,
-      current
-    );
+  const closeUpdateModal = () => {
+    setUpdateModal({ isOpen: false, book: null });
+    setPagesInput('');
+  };
 
-    if (input === null) return; // annulé
-
-    const pages = parseInt(input, 10);
-    if (isNaN(pages) || pages < 0 || pages > total) {
-      window.alert(`Valeur invalide. Entrez un nombre entre 0 et ${total}.`);
+  const handleUpdateProgress = async () => {
+    const book = updateModal.book;
+    const pages = parseInt(pagesInput, 10);
+    
+    if (isNaN(pages) || pages < 0 || pages > book.book.total_pages) {
+      toast.error(`Entrez un nombre entre 0 et ${book.book.total_pages}.`);
       return;
     }
 
     try {
-      await api.post(`/my-books/${userBook.id}/update_progress/`, {
-        pages_read: pages,
-      });
+      await api.post(`/my-books/${book.id}/update_progress/`, { pages_read: pages });
+      toast.success('Progression mise à jour avec succès !');
+      closeUpdateModal();
       await fetchBooks();
     } catch (err) {
       console.error(err);
-      window.alert("Erreur lors de la mise à jour des pages lues.");
+      toast.error('Erreur lors de la mise à jour.');
     }
   };
 
-  const handleDelete = async (userBook) => {
-    const confirmDelete = window.confirm(
-      `Supprimer "${userBook.book.title}" de votre bibliothèque ?`
-    );
-    if (!confirmDelete) return;
+  const handleDelete = async (book) => {
+    if (!window.confirm(`Supprimer "${book.book.title}" de votre bibliothèque ?`)) {
+      return;
+    }
 
     try {
-      await api.delete(`/my-books/${userBook.id}/`);
+      await api.delete(`/my-books/${book.id}/`);
+      toast.success('Livre supprimé de votre bibliothèque.');
       await fetchBooks();
     } catch (err) {
       console.error(err);
-      window.alert("Erreur lors de la suppression du livre.");
+      toast.error('Erreur lors de la suppression.');
     }
   };
 
-  const filteredBooks = books.filter((ub) =>
-    filterStatus === 'all' ? true : ub.status === filterStatus
-  );
+  // Filtrage
+  const filteredBooks = books.filter((ub) => {
+    const matchesStatus = filterStatus === 'all' || ub.status === filterStatus;
+    const matchesSearch = 
+      searchQuery === '' ||
+      ub.book?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ub.book?.author?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
-  const statusLabel = (status) => {
-    switch (status) {
-      case 'non_lu':
-        return 'Non lu';
-      case 'en_cours':
-        return 'En cours';
-      case 'lu':
-        return 'Lu';
-      default:
-        return status;
-    }
-  };
+  const statusFilters = [
+    { value: 'all', label: 'Tous' },
+    { value: 'non_lu', label: 'Non lus' },
+    { value: 'en_cours', label: 'En cours' },
+    { value: 'lu', label: 'Lus' },
+  ];
 
   return (
     <Layout>
-      <div>
-        <h1>📚 Ma Bibliothèque</h1>
+      <div className="space-y-6">
+        <PageHeader
+          title="Ma Bibliothèque"
+          subtitle={`${books.length} livre${books.length > 1 ? 's' : ''} dans votre collection`}
+          icon={FiBook}
+          action={
+            <Link to="/add-book">
+              <Button variant="primary" icon={<FiPlus />}>
+                Ajouter un livre
+              </Button>
+            </Link>
+          }
+        />
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <Alert type="error">{error}</Alert>}
 
-        {/* Filtres par statut */}
-        <div style={{ marginTop: 10, marginBottom: 20 }}>
-          <span>Filtrer par statut : </span>
-          <button
-            onClick={() => setFilterStatus('all')}
-            style={{
-              marginRight: 5,
-              backgroundColor: filterStatus === 'all' ? '#3498db' : '#bdc3c7',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '3px',
-              cursor: 'pointer',
-            }}
-          >
-            Tous
-          </button>
-          <button
-            onClick={() => setFilterStatus('non_lu')}
-            style={{
-              marginRight: 5,
-              backgroundColor: filterStatus === 'non_lu' ? '#3498db' : '#bdc3c7',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '3px',
-              cursor: 'pointer',
-            }}
-          >
-            Non lus
-          </button>
-          <button
-            onClick={() => setFilterStatus('en_cours')}
-            style={{
-              marginRight: 5,
-              backgroundColor: filterStatus === 'en_cours' ? '#3498db' : '#bdc3c7',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '3px',
-              cursor: 'pointer',
-            }}
-          >
-            En cours
-          </button>
-          <button
-            onClick={() => setFilterStatus('lu')}
-            style={{
-              marginRight: 5,
-              backgroundColor: filterStatus === 'lu' ? '#3498db' : '#bdc3c7',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '3px',
-              cursor: 'pointer',
-            }}
-          >
-            Lus
-          </button>
+        {/* Barre de recherche et filtres */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Recherche */}
+          <div className="flex-1">
+            <div className="relative">
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher par titre ou auteur..."
+                className="input-modern pl-12"
+              />
+            </div>
+          </div>
+
+          {/* Filtres de statut */}
+          <div className="flex flex-wrap gap-2">
+            {statusFilters.map((filter) => (
+              <button
+                key={filter.value}
+                onClick={() => setFilterStatus(filter.value)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  filterStatus === filter.value
+                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30'
+                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
 
+        {/* Liste des livres */}
         {loading ? (
-          <p>Chargement...</p>
+          <LoadingSpinner text="Chargement de votre bibliothèque..." />
         ) : filteredBooks.length === 0 ? (
-          <p>Aucun livre dans cette catégorie.</p>
-        ) : (
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              backgroundColor: 'white',
-            }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="card-modern text-center py-12"
           >
-            <thead>
-              <tr>
-                <th style={thStyle}>Titre</th>
-                <th style={thStyle}>Auteur</th>
-                <th style={thStyle}>Statut</th>
-                <th style={thStyle}>Progression</th>
-                <th style={thStyle}>Pages lues</th>
-                <th style={thStyle}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBooks.map((ub) => (
-                <tr key={ub.id}>
-                  <td style={tdStyle}>
-                    <Link to={`/library/${ub.id}`} style={{ textDecoration: 'none', color: '#2980b9' }}>
-                      {ub.book.title}
-                    </Link>
-                  </td>
-                  <td style={tdStyle}>{ub.book.author?.name}</td>
-                  <td style={tdStyle}>{statusLabel(ub.status)}</td>
-                  <td style={tdStyle}>
-                    <ProgressBar value={ub.progress || 0} />
-                  </td>
-                  <td style={tdStyle}>
-                    {ub.pages_read}/{ub.book.total_pages}
-                  </td>
-                  <td style={tdStyle}>
-                    <button
-                      onClick={() => handleUpdateProgress(ub)}
-                      style={{
-                        marginRight: 5,
-                        padding: '5px 8px',
-                        borderRadius: '3px',
-                        border: 'none',
-                        backgroundColor: '#27ae60',
-                        color: 'white',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Mettre à jour
-                    </button>
-                    <button
-                      onClick={() => handleDelete(ub)}
-                      style={{
-                        padding: '5px 8px',
-                        borderRadius: '3px',
-                        border: 'none',
-                        backgroundColor: '#e74c3c',
-                        color: 'white',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Supprimer
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <FiBook className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <p className="text-gray-400 text-lg">
+              {searchQuery || filterStatus !== 'all'
+                ? 'Aucun livre ne correspond à vos critères.'
+                : 'Votre bibliothèque est vide.'}
+            </p>
+            <Link to="/add-book">
+              <Button variant="primary" className="mt-4">
+                Ajouter votre premier livre
+              </Button>
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {filteredBooks.map((book, index) => (
+              <BookCard
+                key={book.id}
+                book={book}
+                delay={index * 0.05}
+                onUpdate={openUpdateModal}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
         )}
       </div>
+
+      {/* Modal de mise à jour */}
+      <Modal
+        isOpen={updateModal.isOpen}
+        onClose={closeUpdateModal}
+        title="Mettre à jour la progression"
+      >
+        {updateModal.book && (
+          <div className="space-y-4">
+            <p className="text-gray-300">
+              <strong>{updateModal.book.book?.title}</strong>
+            </p>
+            <Input
+              label={`Pages lues (max ${updateModal.book.book?.total_pages})`}
+              type="number"
+              min="0"
+              max={updateModal.book.book?.total_pages}
+              value={pagesInput}
+              onChange={(e) => setPagesInput(e.target.value)}
+            />
+            <div className="flex gap-3 pt-4">
+              <Button variant="secondary" onClick={closeUpdateModal} className="flex-1">
+                Annuler
+              </Button>
+              <Button variant="primary" onClick={handleUpdateProgress} className="flex-1">
+                Enregistrer
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </Layout>
-  );
-}
-
-// Styles pour le tableau
-const thStyle = {
-  borderBottom: '1px solid #ddd',
-  textAlign: 'left',
-  padding: '8px',
-  backgroundColor: '#ecf0f1',
-};
-
-const tdStyle = {
-  borderBottom: '1px solid #eee',
-  padding: '8px',
-};
-
-// Composant barre de progression
-function ProgressBar({ value }) {
-  const percent = Math.max(0, Math.min(100, value)); // clamp 0-100
-  return (
-    <div
-      style={{
-        width: '100%',
-        height: '10px',
-        backgroundColor: '#ecf0f1',
-        borderRadius: '5px',
-        overflow: 'hidden',
-      }}
-    >
-      <div
-        style={{
-          width: `${percent}%`,
-          height: '100%',
-          backgroundColor: '#3498db',
-        }}
-      />
-    </div>
   );
 }
 
