@@ -10,9 +10,11 @@ import {
   FiTarget, 
   FiList, 
   FiUsers, 
+  FiUser,
   FiGrid,
   FiLogOut,
   FiMenu,
+  FiTrendingUp,
   FiX
 } from 'react-icons/fi';
 
@@ -35,7 +37,9 @@ function Sidebar() {
     { to: '/add-book', icon: FiPlusCircle, label: 'Ajouter un livre' },
     { to: '/goals', icon: FiTarget, label: 'Objectifs' },
     { to: '/lists', icon: FiList, label: 'Listes de lecture' },
+    { to: '/reading-history', icon: FiTrendingUp, label: 'Historique de lecture' },
     { divider: true },
+    { to: '/profile', icon: FiUser, label: 'Mon Profil' },
     { to: '/authors', icon: FiUsers, label: 'Auteurs' },
     { to: '/books', icon: FiGrid, label: 'Catalogue' },
   ];

@@ -483,35 +483,35 @@
 
 ## 13.1 Profil utilisateur
 
-- [ ] Créer modèle `Profile` (optionnel, extension de User)
-  - [ ] Avatar
-  - [ ] Bio
-  - [ ] Genre favori
-- [ ] Créer page `src/pages/Profile.jsx`
-- [ ] Permettre la modification du profil
+- [X] Créer modèle `Profile` (optionnel, extension de User)
+  - [X] Avatar
+  - [X] Bio
+  - [X] Genre favori
+- [X] Créer page `src/pages/Profile.jsx`
+- [X] Permettre la modification du profil
 
 ## 13.2 Sessions de lecture 
 
-- [ ] Créer modèle `ReadingSession`
-  - [ ] user_book (FK)
-  - [ ] date
-  - [ ] pages_read (dans cette session)
-  - [ ] duration_minutes
-  - [ ] notes
-- [ ] Historique détaillé de lecture
-- [ ] Graphiques de progression
+- [X] Créer modèle `ReadingSession`
+  - [X] user_book (FK)
+  - [X] date
+  - [X] pages_read (dans cette session)
+  - [X] duration_minutes
+  - [X] notes
+- [X] Historique détaillé de lecture
+- [X] Graphiques de progression
 
 ## 13.3 Favoris
 
-- [ ] Ajouter champ `is_favorite` sur UserBook
-- [ ] Filtrer les favoris
-- [ ] Bouton toggle favori
+- [X] Ajouter champ `is_favorite` sur UserBook
+- [X] Filtrer les favoris
+- [X] Bouton toggle favori
 
 ## 13.4 Notes/Ratings
 
-- [ ] Ajouter champ `rating` (1-5) sur UserBook
-- [ ] Afficher les étoiles
-- [ ] Permettre de noter un livre
+- [X] Ajouter champ `rating` (1-5) sur UserBook
+- [X] Afficher les étoiles
+- [X] Permettre de noter un livre
 
 ----------------------------------------------------------------------------------------------------------------------------------
 

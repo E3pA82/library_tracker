@@ -2,6 +2,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Author(models.Model):
@@ -36,6 +38,14 @@ class UserBook(models.Model):
     pages_read = models.PositiveIntegerField(default=0)
     comment = models.TextField(blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    # NOUVEAU : favoris + note
+    is_favorite = models.BooleanField(default=False)
+    rating = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Note de 1 à 5"
+    )
     
     class Meta:
         unique_together = ['user', 'book']
@@ -122,3 +132,84 @@ class ReadingList(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.user.username}"
+    
+class Profile(models.Model):
+    """Profil étendu de l'utilisateur"""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    avatar = models.ImageField(          
+        upload_to='avatars/',
+        null=True,
+        blank=True
+    )
+    bio = models.TextField(
+        blank=True,
+        help_text="Courte description / biographie"
+    )
+    favorite_genre = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Genre littéraire favori"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Profil de {self.user.username}"
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    """Créer automatiquement un profil lors de la création d'un utilisateur"""
+    if created:
+        Profile.objects.create(user=instance)
+
+class ReadingSession(models.Model):
+    """Session de lecture (détail par jour)"""
+    user_book = models.ForeignKey(
+        UserBook,
+        on_delete=models.CASCADE,
+        related_name='reading_sessions'
+    )
+    date = models.DateField()
+    pages_read = models.PositiveIntegerField(
+        verbose_name="Pages lues pendant cette session"
+    )
+    duration_minutes = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Durée (minutes)"
+    )
+    notes = models.TextField(
+        blank=True,
+        verbose_name="Notes"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date', '-created_at']
+
+    def __str__(self):
+        return f"{self.user_book.book.title} - {self.date} - {self.pages_read} pages"
+
+    def save(self, *args, **kwargs):
+        """Après chaque save, recalcule le total pages_read sur le UserBook."""
+        super().save(*args, **kwargs)
+        total = self.user_book.reading_sessions.aggregate(
+            total=Sum('pages_read')
+        )['total'] or 0
+        self.user_book.pages_read = total
+        self.user_book.save()
+
+    def delete(self, *args, **kwargs):
+        """Après suppression, recalcule le total pages_read sur le UserBook."""
+        user_book = self.user_book
+        super().delete(*args, **kwargs)
+        total = user_book.reading_sessions.aggregate(
+            total=Sum('pages_read')
+        )['total'] or 0
+        user_book.pages_read = total
+        user_book.save()

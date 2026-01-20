@@ -97,22 +97,56 @@ function Library() {
     }
   };
 
-  // Filtrage
-  const filteredBooks = books.filter((ub) => {
-    const matchesStatus = filterStatus === 'all' || ub.status === filterStatus;
-    const matchesSearch = 
-      searchQuery === '' ||
-      ub.book?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ub.book?.author?.name?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
+ const handleToggleFavorite = async (book) => {
+  try {
+    await api.post(`/my-books/${book.id}/toggle_favorite/`);
+    toast.success(
+      book.is_favorite ? 'Retiré des favoris.' : 'Ajouté aux favoris.'
+    );
+    await fetchBooks(); // recharger pour voir le changement
+  } catch (err) {
+    console.error(err);
+    toast.error('Erreur lors de la mise à jour du favori.');
+  }
+};
 
-  const statusFilters = [
+const handleRate = async (book, value) => {
+  try {
+    await api.patch(`/my-books/${book.id}/`, { rating: value });
+    toast.success(`Note mise à jour : ${value}/5`);
+    await fetchBooks(); // recharger pour voir les étoiles changées
+  } catch (err) {
+    console.error(err);
+    toast.error('Erreur lors de la mise à jour de la note.');
+  }
+};
+
+ const statusFilters = [
     { value: 'all', label: 'Tous' },
     { value: 'non_lu', label: 'Non lus' },
     { value: 'en_cours', label: 'En cours' },
     { value: 'lu', label: 'Lus' },
+    { value: 'favorites', label: 'Favoris' },
   ];
+
+  // Filtrage
+  const filteredBooks = books.filter((ub) => {
+  const matchesStatus =
+    filterStatus === 'all'
+      ? true
+      : filterStatus === 'favorites'
+      ? ub.is_favorite
+      : ub.status === filterStatus;
+
+  const matchesSearch =
+    searchQuery === '' ||
+    ub.book?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ub.book?.author?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+
+  return matchesStatus && matchesSearch;
+});
+
+ 
 
   return (
     <Layout>
@@ -196,6 +230,8 @@ function Library() {
                 delay={index * 0.05}
                 onUpdate={openUpdateModal}
                 onDelete={handleDelete}
+                onToggleFavorite={handleToggleFavorite}
+                onRate={handleRate}
               />
             ))}
           </div>

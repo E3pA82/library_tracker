@@ -1,6 +1,6 @@
 # backend/api/admin.py
 from django.contrib import admin
-from .models import Author, Book, UserBook, ReadingGoal, ReadingList
+from .models import Author, Book, UserBook, ReadingGoal, ReadingList, Profile, ReadingSession
 
 
 @admin.register(Author)
@@ -39,3 +39,15 @@ class ReadingListAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'user', 'created_at']
     list_filter = ['user']
     search_fields = ['name']
+
+@admin.register(ReadingSession)
+class ReadingSessionAdmin(admin.ModelAdmin):
+    list_display = ['user_book', 'date', 'pages_read', 'duration_minutes', 'created_at']
+    list_filter = ['date', 'user_book__user']
+    search_fields = ['user_book__book__title', 'notes']
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'favorite_genre', 'created_at']
+    search_fields = ['user__username', 'favorite_genre']
+    

@@ -7,17 +7,22 @@ from rest_framework import viewsets, generics, status, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
 
-from .models import Author, Book, UserBook, ReadingGoal, ReadingList
+from .models import Author, Book, UserBook, ReadingGoal, ReadingList, Profile, ReadingSession
 from .serializers import (
     UserSerializer,
     AuthorSerializer,
     BookSerializer,
     UserBookSerializer,
     ReadingGoalSerializer,
-    ReadingListSerializer
+    ReadingListSerializer,
+    ProfileSerializer,
+    ReadingSessionSerializer,
 )
 
 
@@ -99,6 +104,7 @@ class UserBookViewSet(viewsets.ModelViewSet):
 
     # Filtres et recherche
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['status', 'is_favorite', 'rating'] # ?status=lu&is_favorite=True&rating=5
     filterset_fields = ['status']  # ?status=lu
     search_fields = ['book__title', 'book__author__name']  # ?search=mot
     
@@ -155,6 +161,14 @@ class UserBookViewSet(viewsets.ModelViewSet):
         user_book.save()  # Le save() met à jour automatiquement le statut
         
         return Response(UserBookSerializer(user_book).data)
+    
+     # toggle favori
+    @action(detail=True, methods=['post'])
+    def toggle_favorite(self, request, pk=None):
+        user_book = self.get_object()
+        user_book.is_favorite = not user_book.is_favorite
+        user_book.save()
+        return Response({'is_favorite': user_book.is_favorite})
     
     @action(detail=False, methods=['get'])
     def stats(self, request):
@@ -334,3 +348,73 @@ class ReadingListViewSet(viewsets.ModelViewSet):
         return Response({
             "message": f"Livre '{user_book.book.title}' retiré de la liste '{reading_list.name}'."
         })
+    
+# =============================================================================
+# 4.7 PROFILE VIEWSET (Profil utilisateur)
+# =============================================================================
+class ProfileView(generics.RetrieveUpdateAPIView):
+    """
+    Récupérer et mettre à jour le profil de l'utilisateur connecté.
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # ← IMPORTANT pour fichiers
+
+    def get_object(self):
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        return profile
+    
+# =============================================================================
+# 4.8 READING SESSION VIEWSET (Sessions de lecture)
+# =============================================================================
+class ReadingSessionViewSet(viewsets.ModelViewSet):
+    """
+    Sessions de lecture détaillées
+
+    GET    /api/reading-sessions/             → liste des sessions
+    POST   /api/reading-sessions/             → créer une session
+    GET    /api/reading-sessions/{id}/        → détail
+    PATCH  /api/reading-sessions/{id}/        → modifier
+    DELETE /api/reading-sessions/{id}/        → supprimer
+
+    GET    /api/reading-sessions/summary/?days=30
+           → résumé des pages lues par jour sur N jours
+    """
+    serializer_class = ReadingSessionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['user_book', 'date']
+    ordering_fields = ['date', 'pages_read', 'created_at']
+    ordering = ['-date', '-created_at']
+
+    def get_queryset(self):
+        return ReadingSession.objects.filter(
+            user_book__user=self.request.user
+        ).select_related('user_book__book')
+
+    @action(detail=False, methods=['get'])
+    def summary(self, request):
+        """
+        Résumé des pages lues par jour.
+
+        GET /api/reading-sessions/summary/?days=30
+
+        Retourne une liste de { "date": "YYYY-MM-DD", "pages": total_pages_lues_ce_jour }
+        """
+        try:
+            days = int(request.query_params.get('days', 30))
+        except ValueError:
+            days = 30
+
+        today = timezone.now().date()
+        start_date = today - timedelta(days=days - 1)
+
+        qs = self.get_queryset().filter(date__gte=start_date)
+
+        data = (
+            qs.values('date')
+            .annotate(pages=Sum('pages_read'))
+            .order_by('date')
+        )
+
+        return Response(list(data))

@@ -14,6 +14,8 @@ import NewGoal from './pages/NewGoal';
 import ReadingLists from './pages/ReadingLists';
 import ListDetail from './pages/ListDetail';
 import NewList from './pages/NewList';
+import Profile from './pages/Profile';
+import ReadingHistory from './pages/ReadingHistory';
 
 function App() {
   return (
@@ -93,6 +95,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <NewList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reading-history"
+              element={
+                <PrivateRoute>
+                  <ReadingHistory />
                 </PrivateRoute>
               }
             />
