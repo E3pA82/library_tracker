@@ -577,23 +577,23 @@
 
 # 📊 RÉCAPITULATIF DES PHASES
 
-| Phase | Description | Priorité | Statut |
-|-------|-------------|----------|--------|
-| 1     | Configuration initiale | 🔴     | [ ] |
-| 2 | Modèles de données         | 🔴 | [ ] |
-| 3 | API - Serializers | 🔴 | [ ] |
-| 4 | API - Views | 🔴 | [ ] |
-| 5 | API - URLs | 🔴 | [ ] |
-| 6 | Frontend - Config | 🔴 | [ ] |
-| 7 | Frontend - Auth | 🔴 | [ ] |
-| 8 | Frontend - Pages | 🟡 | [ ] |
-| 9 | Frontend - Objectifs | 🟡 | [ ] |
-| 10 | Frontend - Listes | 🟡 | [ ] |
-| 11 | Améliorations Backend | 🟡 | [ ] |
-| 12 | Améliorations Frontend | 🟢 | [ ] |
-| 13 | Fonctionnalités avancées | 🟢 | [ ] |
-| 14 | Tests | 🟢 | [ ] |
-| 15 | Déploiement | 🟢 | [ ] |
+| Phase | Description              | Priorité  | Statut |
+|-------|--------------------------|-----------|--------|
+| 1     | Configuration initiale   | 🔴        | [ ]    |
+| 2     | Modèles de données       | 🔴        | [ ]    |
+| 3     | API - Serializers        | 🔴        | [ ]    |
+| 4     | API - Views              | 🔴        | [ ]    |
+| 5     | API - URLs               | 🔴        | [ ]    |
+| 6     | Frontend - Config        | 🔴        | [ ]    |
+| 7     | Frontend - Auth          | 🔴        | [ ]    |
+| 8     | Frontend - Pages         | 🟡        | [ ]    |
+| 9     | Frontend - Objectifs     | 🟡        | [ ]    |
+| 10    | Frontend - Listes        | 🟡        | [ ]    |
+| 11    | Améliorations Backend    | 🟡        | [ ]    |
+| 12    | Améliorations Frontend   | 🟢        | [ ]    |
+| 13    | Fonctionnalités avancées | 🟢        | [ ]    |
+| 14    | Tests                    | 🟢        | [ ]    |
+| 15    | Déploiement              | 🟢        | [ ]    |
 
 
 
@@ -641,5 +641,3 @@ touch TODO.md
 # ou sur Windows PowerShell
 New-Item -Path TODO.md -ItemType File
 ```
-
-Tu veux que je t'accompagne sur une phase spécifique ?

@@ -16,6 +16,8 @@ import ListDetail from './pages/ListDetail';
 import NewList from './pages/NewList';
 import Profile from './pages/Profile';
 import ReadingHistory from './pages/ReadingHistory';
+import Authors from './pages/Authors';
+import Catalog from './pages/Catalog';
 
 function App() {
   return (
@@ -111,6 +113,23 @@ function App() {
               element={
                 <PrivateRoute>
                   <ReadingHistory />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/authors"
+              element={
+                <PrivateRoute>
+                  <Authors />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/books"
+              element={
+                <PrivateRoute>
+                  <Catalog />
                 </PrivateRoute>
               }
             />
